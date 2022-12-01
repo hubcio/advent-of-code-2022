@@ -8,46 +8,41 @@ pub mod a {
     use std::path::PathBuf;
 
     pub fn find_elf_carrying_most_calories(file_path: PathBuf) -> usize {
-        let data = BufReader::new(File::open(file_path).unwrap())
+        BufReader::new(File::open(file_path).unwrap())
             .lines()
             .map(|line| line.unwrap().parse::<String>().unwrap())
-            .collect::<Vec<String>>();
-
-        let highest_sum = data
+            .collect::<Vec<String>>()
             .split(|e| e.is_empty())
             .map(|x| x.iter().map(|e| e.parse::<usize>().unwrap()).sum::<usize>())
             .max()
-            .unwrap();
-
-        highest_sum
+            .unwrap()
     }
 }
 
 pub mod b {
+    use std::collections::BTreeSet;
     use std::fs::File;
     use std::io::{BufRead, BufReader};
     use std::path::PathBuf;
 
-    pub fn find_top_3(file_path: PathBuf) -> usize {
-        let data = BufReader::new(File::open(file_path).unwrap())
+    pub fn find_sum_of_top_3(file_path: PathBuf) -> usize {
+        BufReader::new(File::open(file_path).unwrap())
             .lines()
             .map(|line| line.unwrap().parse::<String>().unwrap())
-            .collect::<Vec<String>>();
-
-        let mut sums = data
+            .collect::<Vec<String>>()
             .split(|e| e.is_empty())
             .map(|x| x.iter().map(|e| e.parse::<usize>().unwrap()).sum::<usize>())
-            .collect::<Vec<usize>>();
-
-        sums.sort();
-
-        sums.iter().rev().take(3).sum()
+            .collect::<BTreeSet<usize>>()
+            .iter()
+            .rev()
+            .take(3)
+            .sum::<usize>()
     }
 }
 
 mod tests {
     use crate::day1::a::find_elf_carrying_most_calories;
-    use crate::day1::b::find_top_3;
+    use crate::day1::b::find_sum_of_top_3;
 
     use std::path::PathBuf;
 
@@ -72,6 +67,6 @@ mod tests {
         let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         d.push("src/day1/input.txt");
 
-        assert_eq!(find_top_3(d.to_owned()), 213159);
+        assert_eq!(find_sum_of_top_3(d.to_owned()), 213159);
     }
 }
